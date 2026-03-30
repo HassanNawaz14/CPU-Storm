@@ -1,0 +1,29 @@
+CPUStorm Attack Report
+======================
+
+System Information:
+  Total CPU Cores: 4
+  Targeted Cores: 4
+
+Attack Configuration:
+  Duration: 10.4 seconds
+  Peak CPU Usage: 100.0%
+
+Performance Impact:
+  Canary Baseline: 5 samples, avg 2.260 ms
+  Canary During Attack: 70 samples, avg 5.062 ms
+  Starvation Ratio: 2.24x
+
+Work Summary:
+  Core 0: 1034219835 iterations
+  Core 1: 1049074467 iterations
+  Core 2: 1052177196 iterations
+  Core 3: 1065212049 iterations
+  Total: 4200683547 iterations
+  Average Rate: 404.7 M/s
+
+Ethical Considerations:
+  This simulation demonstrates CPU exhaustion attacks (CWE-400).
+  Mitigation: Monitor system resources, implement rate limiting,
+  use CPU affinity controls, and deploy intrusion detection.
+  Always test on authorized systems only.

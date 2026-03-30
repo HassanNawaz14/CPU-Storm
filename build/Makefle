@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────────────────────
+# CPUStorm — Makefile
+# Supports: Linux, macOS, Windows (via MinGW/MSYS2)
+# ─────────────────────────────────────────────────────────────────
+
+CC      = gcc
+TARGET  = cpustorm
+SRCDIR  = src
+INCDIR  = include
+OBJDIR  = build
+
+SRCS    = $(SRCDIR)/main.c \
+          $(SRCDIR)/attack_engine.c \
+          $(SRCDIR)/dashboard.c \
+          $(SRCDIR)/canary.c
+
+OBJS    = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+
+CFLAGS  = -Wall -Wextra -O2 -I$(INCDIR)
+
+# ── Platform-specific flags ───────────────────────────────────────
+ifeq ($(OS), Windows_NT)
+    LDFLAGS =                       # Windows: pthreads not needed
+    RM      = del /Q
+    MKDIR   = mkdir
+else
+    LDFLAGS = -lpthread             # POSIX: link pthreads
+    RM      = rm -f
+    MKDIR   = mkdir -p
+endif
+
+# ── Default target ────────────────────────────────────────────────
+all: $(OBJDIR) $(TARGET)
+
+$(OBJDIR):
+	$(MKDIR) $(OBJDIR)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	@echo ""
+	@echo "  Build successful → ./$(TARGET)"
+	@echo "  Run:  ./$(TARGET) --info"
+	@echo "  Run:  ./$(TARGET) -t 10"
+	@echo ""
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# ── Utility targets ───────────────────────────────────────────────
+clean:
+	$(RM) $(OBJDIR)/*.o $(TARGET)
+
+rebuild: clean all
+
+.PHONY: all clean rebuild
